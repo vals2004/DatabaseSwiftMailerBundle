@@ -35,7 +35,7 @@ class EmailRepository extends EntityRepository
 
         $qb->where($qb->expr()->eq('e.status', ':status'))->setParameter(':status', Email::STATUS_READY);
         $qb->orWhere($qb->expr()->eq('e.status', ':status_1'))->setParameter(':status_1', Email::STATUS_FAILED);
-        $qb->andWhere($qb->expr()->lt('e.retries', ':retries'))->setParameter(':retries', 10);
+        //$qb->andWhere($qb->expr()->lt('e.retries', ':retries'))->setParameter(':retries', 10);
 
 
         $qb->addOrderBy('e.retries', 'ASC');
@@ -46,13 +46,12 @@ class EmailRepository extends EntityRepository
 
         $emails = $qb->getQuery()->getResult();
         if (count($emails) > 0) {
-            $ids = [];
+            $em = $this->getEntityManager();
             foreach ($emails as $email) {
-                $ids[] = $email->getId();
+                $email->setStatus(Email::STATUS_PROCESSING);
+                $em->persist($email);                
             }
-            $query = $this->_em->createQuery("UPDATE CitraxDatabaseSwiftMailerBundle:Email e SET e.status = '" . Email::STATUS_PROCESSING . "' WHERE e.id IN (:ids)");
-            $query->setParameter(':ids', $ids);
-            $query->execute();
+            $em->flush();
         }
 
         return $emails;
