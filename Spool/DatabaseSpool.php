@@ -11,7 +11,7 @@ namespace Citrax\Bundle\DatabaseSwiftMailerBundle\Spool;
 
 use Citrax\Bundle\DatabaseSwiftMailerBundle\Entity\Email;
 use Citrax\Bundle\DatabaseSwiftMailerBundle\Entity\EmailRepository;
-use Swift_Mime_Message;
+use Swift_Mime_SimpleMessage;
 use Swift_Transport;
 
 class DatabaseSpool extends \Swift_ConfigurableSpool {
@@ -62,7 +62,7 @@ class DatabaseSpool extends \Swift_ConfigurableSpool {
      *
      * @return bool    Whether the operation has succeeded
      */
-    public function queueMessage(Swift_Mime_Message $message)
+    public function queueMessage(Swift_Mime_SimpleMessage $message)
     {
         $email = new Email();
         $email->setFromEmail(implode('; ', array_keys($message->getFrom())) );
