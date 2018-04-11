@@ -309,7 +309,7 @@ class Email
     /**
      * @param \Swift_Mime_Message $message
      */
-    public function setMessage(\Swift_Mime_Message $message)
+    public function setMessage(\Swift_Message $message)
     {
         $this->message = base64_encode(serialize($message));
     }
